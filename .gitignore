@@ -1,0 +1,22 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Dataset (unpack from LFS zip — see scripts/unpack_dataset.sh)
+data/raw_images/
+data/processed/
+
+# Training artifacts
+outputs/
+*.pt
+*.pth
+*.onnx

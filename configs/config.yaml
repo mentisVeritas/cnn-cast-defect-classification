@@ -1,0 +1,52 @@
+random_seed: 42
+
+data:
+  raw_images_dir: data/raw_images
+  labels_file: data/label.csv
+  image_column: image
+  label_column: choice
+  processed_dir: data/processed
+  split_ratios:
+    train: 0.8
+    val: 0.1
+    test: 0.1
+  image_extensions: [".jpg", ".jpeg", ".png", ".bmp"]
+
+training:
+  batch_size: 16
+  learning_rate: 0.001
+  epochs: 20
+  image_size: 224
+  num_workers: auto
+  device: auto
+  dropout: 0.4
+
+  # stop if val loss does not improve for N epochs
+  early_stopping:
+    enabled: true
+    patience: 5
+
+augmentation:
+  train:
+    random_horizontal_flip: true
+    random_rotation: 10
+
+checkpoint:
+  resume_training: true
+  start_from_scratch: false
+  save_best_model: true
+  latest_checkpoint: outputs/models/checkpoints/latest_checkpoint.pth
+  best_model: outputs/models/best_model.pth
+
+logging:
+  log_to_file: true
+  log_file: outputs/logs/training.log
+
+evaluation:
+  metrics_file: outputs/metrics/evaluation_metrics.json
+  confusion_matrix_plot: outputs/plots/confusion_matrix.png
+  classification_report_file: outputs/metrics/classification_report.txt
+
+visualization:
+  loss_curve: outputs/plots/loss_curve.png
+  accuracy_curve: outputs/plots/accuracy_curve.png
