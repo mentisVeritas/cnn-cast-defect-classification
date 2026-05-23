@@ -13,6 +13,7 @@ __pycache__/
 
 # Dataset (unpack from LFS zip — see scripts/unpack_dataset.sh)
 data/raw_images/
+data/label.csv
 data/processed/
 
 # Training artifacts

@@ -2,9 +2,9 @@
 
 | File / folder | In git | Notes |
 |---------------|--------|--------|
-| `raw_images.zip` | **Git LFS** (~68 MB) | All images in one archive |
-| `label.csv` | git | Columns: `image`, `choice` |
-| `raw_images/` | no | Run `bash scripts/unpack_dataset.sh` after clone |
+| `data.zip` | **Git LFS** | `label.csv` + `raw_images/` (~85 MB) |
+| `label.csv` | no | Inside `data.zip`; unpack after clone |
+| `raw_images/` | no | Inside `data.zip`; unpack after clone |
 | `processed/` | no | Run `python scripts/split_dataset.py` |
 
 ## After clone

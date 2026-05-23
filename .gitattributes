@@ -1,2 +1,2 @@
-# One archive instead of thousands of LFS pointers
-data/raw_images.zip filter=lfs diff=lfs merge=lfs -text
+# Whole dataset archive (label.csv + raw_images/) via Git LFS
+data/data.zip filter=lfs diff=lfs merge=lfs -text

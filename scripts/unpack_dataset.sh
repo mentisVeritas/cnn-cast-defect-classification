@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Unpack data/raw_images.zip after clone (Git LFS pulls the zip).
+# Unpack data/data.zip after clone (Git LFS pulls the archive).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ZIP="$ROOT/data/raw_images.zip"
-DEST="$ROOT/data/raw_images"
+ZIP="$ROOT/data/data.zip"
+DEST="$ROOT/data"
 
-if [[ -d "$DEST" ]] && [[ -n "$(ls -A "$DEST" 2>/dev/null)" ]]; then
+if [[ -f "$DEST/label.csv" ]] && [[ -d "$DEST/raw_images" ]] && [[ -n "$(ls -A "$DEST/raw_images" 2>/dev/null)" ]]; then
   echo "Already unpacked: $DEST"
   exit 0
 fi
@@ -15,6 +15,5 @@ if [[ ! -f "$ZIP" ]]; then
   exit 1
 fi
 
-mkdir -p "$(dirname "$DEST")"
-unzip -q -o "$ZIP" -d "$ROOT/data"
-echo "Unpacked to $DEST"
+unzip -q -o "$ZIP" -d "$DEST"
+echo "Unpacked to $DEST (label.csv + raw_images/)"

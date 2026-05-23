@@ -17,7 +17,7 @@ GPU (NVIDIA): replace the torch line with
 
 macOS/Linux: `pip install torch torchvision` then `pip install -r requirements.txt`
 
-Dataset: `data/label.csv` + images in `data/raw_images.zip` (Git LFS). After clone:
+Dataset: `data/data.zip` in Git LFS (`label.csv` + `raw_images/`). After clone:
 
 ```bash
 git lfs pull
