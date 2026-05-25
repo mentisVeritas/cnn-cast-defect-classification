@@ -18,8 +18,8 @@ data/raw_images/
 data/label.csv
 data/processed/
 
-# Training artifacts
-outputs/
-*.pt
-*.pth
+# Runtime temp (Streamlit upload)
+outputs/temp.jpg
+
+# Optional export formats (not used yet)
 *.onnx

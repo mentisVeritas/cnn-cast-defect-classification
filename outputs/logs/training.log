@@ -1,0 +1,21 @@
+2026-05-21 11:42:14 | INFO | Training from scratch.
+2026-05-21 11:42:42 | INFO | Epoch 1/20 train_loss=0.5270 val_loss=0.4680 | train_acc=76.13% val_acc=79.37%
+2026-05-21 11:43:05 | INFO | Epoch 2/20 train_loss=0.4595 val_loss=0.4595 | train_acc=79.73% val_acc=83.49%
+2026-05-21 11:43:28 | INFO | Epoch 3/20 train_loss=0.4044 val_loss=0.4890 | train_acc=82.17% val_acc=80.47%
+2026-05-21 11:43:51 | INFO | Epoch 4/20 train_loss=0.3551 val_loss=1.0151 | train_acc=86.24% val_acc=61.62%
+2026-05-21 11:44:13 | INFO | Epoch 5/20 train_loss=0.3433 val_loss=0.3971 | train_acc=86.12% val_acc=86.38%
+2026-05-21 11:44:35 | INFO | Epoch 6/20 train_loss=0.3218 val_loss=0.6126 | train_acc=87.82% val_acc=63.27%
+2026-05-21 11:44:57 | INFO | Epoch 7/20 train_loss=0.3244 val_loss=0.4278 | train_acc=87.54% val_acc=79.09%
+2026-05-21 11:45:18 | INFO | Epoch 8/20 train_loss=0.2874 val_loss=0.2446 | train_acc=89.89% val_acc=91.61%
+2026-05-21 11:45:41 | INFO | Epoch 9/20 train_loss=0.2870 val_loss=0.2421 | train_acc=89.45% val_acc=92.16%
+2026-05-21 11:46:04 | INFO | Epoch 10/20 train_loss=0.2807 val_loss=0.2862 | train_acc=89.81% val_acc=89.27%
+2026-05-25 17:18:48 | INFO | Resumed from epoch 10, next epoch: 11
+2026-05-25 17:19:13 | INFO | Epoch 11/20 train_loss=0.2701 val_loss=0.2558 | train_acc=90.25% val_acc=91.33%
+2026-05-25 17:19:37 | INFO | Epoch 12/20 train_loss=0.2734 val_loss=0.2533 | train_acc=90.25% val_acc=90.78%
+2026-05-25 17:20:01 | INFO | Epoch 13/20 train_loss=0.2623 val_loss=0.2398 | train_acc=90.66% val_acc=92.71%
+2026-05-25 17:20:26 | INFO | Epoch 14/20 train_loss=0.2465 val_loss=0.2258 | train_acc=91.92% val_acc=92.43%
+2026-05-25 17:20:50 | INFO | Epoch 15/20 train_loss=0.2509 val_loss=0.2730 | train_acc=91.06% val_acc=91.06%
+2026-05-25 17:21:14 | INFO | Epoch 16/20 train_loss=0.2616 val_loss=0.3397 | train_acc=90.65% val_acc=85.69%
+2026-05-25 17:21:38 | INFO | Epoch 17/20 train_loss=0.2573 val_loss=0.2418 | train_acc=91.11% val_acc=92.43%
+2026-05-25 17:22:03 | INFO | Epoch 18/20 train_loss=0.2429 val_loss=0.2803 | train_acc=91.54% val_acc=89.13%
+2026-05-25 17:22:29 | INFO | Epoch 19/20 train_loss=0.2352 val_loss=0.2701 | train_acc=92.11% val_acc=89.96%
