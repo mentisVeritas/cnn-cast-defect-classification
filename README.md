@@ -2,76 +2,180 @@
 
 Binary classification of cast images: **defect** vs **normal** (custom CNN, PyTorch).
 
-## Setup (Windows)
+This guide is for **Windows 10/11**.
+
+---
+
+## Requirements
+
+| Tool | Notes |
+|------|--------|
+| [Python 3.11](https://www.python.org/downloads/) | During install enable **“Add python.exe to PATH”** |
+| [Git for Windows](https://git-scm.com/download/win) | Includes Git Bash and `tar` for unpacking |
+| [Git LFS](https://git-lfs.com/) | `git lfs install` once per machine |
+
+**NVIDIA GPU** + актуальный драйвер (CUDA 12.x) — для обучения на видеокарте.
+
+---
+
+## 1. Clone and dataset (Git LFS)
 
 ```bat
-py -3.11 -m venv .venv
-.venv\Scripts\activate
+git clone git@github.com:mentisVeritas/cnn-cast-defect-classification.git
+cd cnn-cast-defect-classification
 
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
-```
-
-GPU (NVIDIA): replace the torch line with  
-`pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124`
-
-macOS/Linux: `pip install torch torchvision` then `pip install -r requirements.txt`
-
-Dataset: `data/data.zip` in Git LFS (`label.csv` + `raw_images/`). After clone:
-
-```bash
+git lfs install
 git lfs pull
-bash scripts/unpack_dataset.sh
+scripts\unpack_dataset.bat
 ```
 
-## Pipeline
+After unpack you should have:
 
-```bash
-python scripts/split_dataset.py
-python scripts/train.py
-python scripts/evaluate.py
-python scripts/inference.py --image data/processed/test/defect/example.jpg
+- `data\label.csv`
+- `data\raw_images\` (thousands of `.jpeg` files)
+- `data\data.zip` (LFS archive, keep in repo)
+
+If `git lfs pull` fails, install Git LFS and run it again from the project folder.
+
+---
+
+## 2. Virtual environment
+
+**Quick setup (recommended, GPU):**
+
+```bat
+scripts\setup_windows.bat
 ```
 
-Optional demo UI:
+Скрипт ставит PyTorch с **CUDA 12.4** и в конце проверяет `torch.cuda.is_available()`.
 
-```bash
-streamlit run app/streamlit_app.py
+**Manual setup (GPU):**
+
+```bat
+cd cnn-cast-defect-classification
+py -3.11 -m venv .venv
+.venv\Scripts\activate.bat
+
+python -m pip install --upgrade pip
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+pip install -r requirements.txt
+python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no GPU')"
 ```
 
-Settings: `configs/config.yaml` (batch size, epochs, learning rate, dropout, simple augmentations).
+**Только CPU** (нет NVIDIA):
 
-**What the training code uses (beginner level):**
+```bat
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+```
+
+Check that the venv is active — prompt shows `(.venv)` and:
+
+```bat
+where python
+```
+
+must point to:
+
+```text
+...\cnn-cast-defect-classification\.venv\Scripts\python.exe
+```
+
+Activate venv in every new terminal:
+
+```bat
+.venv\Scripts\activate.bat
+```
+
+---
+
+## 3. Training pipeline
+
+Run from the project root with venv active:
+
+```bat
+python scripts\split_dataset.py
+python scripts\train.py
+python scripts\evaluate.py
+python scripts\inference.py --image data\raw_images\img_00002.jpeg
+```
+
+Outputs:
+
+- checkpoints: `outputs\models\`
+- plots: `outputs\plots\`
+- metrics: `outputs\metrics\`
+
+Settings: `configs\config.yaml` (batch size, epochs, learning rate, dropout).
+
+---
+
+## 4. Streamlit demo (browser UI)
+
+```bat
+.venv\Scripts\activate.bat
+streamlit run app\streamlit_app.py
+```
+
+Open the URL from the terminal (usually `http://localhost:8501`).
+
+**PyCharm:** Run configuration **Streamlit app**, or Run on `app\streamlit_app.py` (starts Streamlit automatically).  
+Do **not** use plain “python streamlit_app.py” without Streamlit — the UI will not open.
+
+**PyCharm interpreter:**  
+`Settings → Project → Python Interpreter → Add → Existing` →  
+`.venv\Scripts\python.exe`
+
+---
+
+## 5. Project layout
+
+```text
+configs\        — yaml settings
+data\           — data.zip (LFS), label.csv, raw_images\ after unpack
+scripts\        — train, evaluate, inference, split, unpack (.bat)
+src\            — model, dataset, training loop, metrics
+app\            — Streamlit demo
+outputs\        — checkpoints, plots, logs (created when training)
+```
+
+---
+
+## 6. Config notes (Windows)
+
+- `num_workers: auto` → **0** on Windows (stable DataLoader, no multiprocessing errors).
+- `device: auto` → CUDA if available, otherwise CPU.
+- Retrain from scratch: set `checkpoint.start_from_scratch: true` in `configs\config.yaml`.
+- Class folders: `defect`, `normal` (ImageFolder order).
+
+---
+
+## 7. Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `'py' is not recognized` | Reinstall Python 3.11 with “Add to PATH”, or use `python` instead of `py` |
+| `git lfs pull` — file is a pointer | Run `git lfs install`, then `git lfs pull` again |
+| `Missing data\data.zip` | `git lfs pull`, then `scripts\unpack_dataset.bat` |
+| `train not found` / `processed` missing | Run `python scripts\split_dataset.py` first |
+| Streamlit warnings / no browser | Use `streamlit run app\streamlit_app.py`, not `python app\streamlit_app.py` |
+| PyCharm wrong interpreter | Point to `.venv\Scripts\python.exe`, not another project’s venv |
+| `cuda available: False` | Обнови драйвер NVIDIA; переустанови torch с `cu124`; в `configs\config.yaml` можно поставить `device: cpu` |
+| Slow training | Проверь, что в логе train видно `Device: cuda`, не `cpu` |
+
+---
+
+## What the model uses (beginner level)
+
 - `CrossEntropyLoss` + `Adam`
 - augmentations: horizontal flip + small rotation (train only)
 - dropout in the CNN
-- early stopping if validation loss stops improving
-- no mixup, label smoothing, or class weights (can add later)
+- early stopping when validation loss stops improving
 
-## Project layout
+---
 
-```
-configs/       — yaml settings
-data/          — raw_images, label.csv, processed/ (after split)
-scripts/       — train, evaluate, inference, split_dataset
-src/           — model, dataset, training loop, metrics
-notebooks/     — experiments + label cleanup draft
-app/           — Streamlit upload demo (optional)
-tests/         — smoke tests only
-outputs/       — checkpoints, plots, logs (gitignored)
-```
+## TODO
 
-## TODO (not done yet)
-
-- [ ] More tests (only smoke tests in `tests/`)
-- [ ] Compare with a pretrained backbone (ResNet18) — only custom CNN for now
-- [ ] Export model to ONNX / TorchScript
-- [ ] Proper validation of `label.csv` before split (see `notebooks/label_cleanup.ipynb`)
-- [ ] Try mixup / label smoothing / class weights (removed for simplicity)
-- [ ] Hyperparameter search / cross-validation
-
-## Notes
-
-- Class order from ImageFolder: folder name order (usually `defect`, `normal`).
-- `num_workers: auto` → 0 on Windows/macOS, 4 on Linux.
-- Checkpoints: `outputs/models/`. Set `checkpoint.start_from_scratch: true` in config to retrain from zero.
+- [ ] More automated tests
+- [ ] ResNet18 baseline
+- [ ] Export to ONNX / TorchScript
+- [ ] Stricter `label.csv` validation before split
