@@ -1,19 +1,27 @@
-# Dataset
+# Dataset folder
 
-| File / folder | In git | Notes |
-|---------------|--------|--------|
-| `data.zip` | **Git LFS** | Contains `label.csv` and `raw_images/` (~65–85 MB) |
-| `label.csv` | no | Created after unpack |
-| `raw_images/` | no | Created after unpack |
+## What must be here before training
+
+| Path | Required | Description |
+|------|----------|-------------|
+| `raw_images/` | **yes** | All cast surface images |
+| `label.csv` | **yes** | Image filename → class (`defect` / `normal`) |
 | `processed/` | no | Created by `python scripts/split_dataset.py` |
 
-## After clone
+## Optional
+
+| Path | Notes |
+|------|--------|
+| `data.zip` | Archive backup; only needed if `label.csv` / `raw_images/` are missing |
+
+Unpack from zip (if you only have the archive):
 
 ```bash
-git lfs install
-git lfs pull
 python scripts/unpack_dataset.py
-python scripts/split_dataset.py
 ```
 
-Check `data/data.zip` size: about **65–85 MB**. If it is ~130 bytes, only the LFS pointer was downloaded — run `git lfs pull` again.
+Then split for training:
+
+```bash
+python scripts/split_dataset.py
+```

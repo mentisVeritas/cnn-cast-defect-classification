@@ -23,13 +23,13 @@ def main() -> None:
 
     if not zip_path.is_file():
         print(f"Missing {zip_path}")
-        print("Run: git lfs install && git lfs pull")
+        print("Copy data/data.zip into data/ or ensure data/raw_images/ and data/label.csv exist.")
         sys.exit(1)
 
     size_mb = zip_path.stat().st_size / (1024 * 1024)
     if size_mb < 1:
-        print(f"data.zip is only {zip_path.stat().st_size} bytes — Git LFS file not downloaded.")
-        print("Run: git lfs pull")
+        print(f"data.zip is only {zip_path.stat().st_size} bytes — not a valid archive.")
+        print("Replace data/data.zip or copy data/raw_images/ and data/label.csv from your source folder.")
         sys.exit(1)
 
     dest.mkdir(parents=True, exist_ok=True)

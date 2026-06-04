@@ -2,14 +2,14 @@
 
 Binary classifier for cast surface images: **defect** vs **normal** (custom CNN, PyTorch).
 
-Works on **Windows, macOS, and Linux**. Below: standard **Git + Python venv** setup (no extra install scripts).
+Works on **Windows, macOS, and Linux**. Setup below assumes you **already have the project folder** (code + data), not a download from the internet.
 
 ---
 
 ## What is included
 
 - Custom CNN training and evaluation
-- Dataset ~7,285 images (Git LFS)
+- Dataset ~7,285 images
 - Streamlit demo (predictions, feature maps, metrics)
 - ResNet18 baseline comparison and learning-rate tuning (0.001 vs 0.0005)
 - Notebook `notebooks/experiments.ipynb` for report figures
@@ -19,36 +19,51 @@ Works on **Windows, macOS, and Linux**. Below: standard **Git + Python venv** se
 ## Requirements
 
 - Python **3.11**
-- Git + [Git LFS](https://git-lfs.com/)
 - ~2 GB free disk space  
 - **CPU is fine** (GPU optional, faster training)
 
 ---
 
-## 1. Clone and download data
+## 1. Project and data (check first)
 
-```bash
-git clone https://github.com/mentisVeritas/cnn-cast-defect-classification.git
-cd cnn-cast-defect-classification
+Open the project folder in terminal or IDE. From the **project root** you should see at least:
 
-git lfs install
-git lfs pull
+```text
+configs/
+scripts/
+src/
+app/
+data/
 ```
 
-Unpack the dataset:
+Inside `data/` you need:
+
+| Path | Required |
+|------|----------|
+| `data/raw_images/` | yes — image files (`.jpeg`, etc.) |
+| `data/label.csv` | yes — labels for each image |
+
+If `label.csv` is missing but you have `data/data.zip`, unpack once:
 
 ```bash
 python scripts/unpack_dataset.py
 ```
 
-You should get `data/label.csv` and `data/raw_images/`.  
-Details: [data/README.md](data/README.md)
+More detail: [data/README.md](data/README.md)
+
+**Windows:** open Command Prompt or PowerShell, go to the project folder, for example:
+
+```bat
+cd C:\path\to\cnn-cast-defect-classification
+```
 
 ---
 
 ## 2. Virtual environment
 
-**Windows (Command Prompt or PowerShell):**
+Create and activate a venv **inside the project** (once per machine).
+
+**Windows:**
 
 ```bat
 python -m venv .venv
@@ -70,6 +85,8 @@ pip install -r requirements.txt
 
 For **NVIDIA GPU**, use the CUDA wheel from [pytorch.org](https://pytorch.org/get-started/locally/) instead of `cpu`, and set `device: auto` in config.
 
+Every new terminal session: activate again (`.venv\Scripts\activate` or `source .venv/bin/activate`).
+
 Verify:
 
 ```bash
@@ -84,18 +101,18 @@ Edit `configs/config.yaml`:
 
 ```yaml
 training:
-  device: cpu    # use cpu on laptops without GPU; or auto / cuda
+  device: cpu    # laptops without GPU; or auto / cuda
   batch_size: 16
   epochs: 25
 ```
 
-On Windows, `num_workers: auto` uses **0** (stable). Training on CPU can take a long time — reduce `epochs` for a quick test.
+On Windows, `num_workers: auto` uses **0** (stable). Training on CPU can take a long time — lower `epochs` for a quick test.
 
 ---
 
 ## 4. Train and evaluate
 
-Activate the venv, then from the project root:
+With venv active, from the project root:
 
 ```bash
 python scripts/split_dataset.py
@@ -164,11 +181,15 @@ Run after the pipeline above. Set `RUN_TRAINING = False` in the notebook if you 
 ```text
 app/              Streamlit UI
 configs/          config.yaml
-data/             data.zip (LFS), raw_images after unpack
+data/
+  label.csv       labels
+  raw_images/     original images
+  processed/      train/val/test (after split_dataset.py)
 notebooks/        experiments.ipynb
 scripts/          CLI entry points
 src/              model, training, experiments, feature maps
-outputs/          created when you train (local)
+outputs/          created when you train (on this PC)
+.venv/            Python environment (create locally, not copied)
 ```
 
 ---
@@ -177,10 +198,10 @@ outputs/          created when you train (local)
 
 | Problem | Solution |
 |---------|----------|
-| `data.zip` ~130 bytes | `git lfs install` then `git lfs pull` |
-| Missing `label.csv` | `python scripts/unpack_dataset.py` |
+| `No module named ...` | Activate `.venv`, run `pip install -r requirements.txt` |
+| Missing `data/raw_images` or `label.csv` | Copy full `data/` folder from the USB/archive you received |
 | No `data/processed` | `python scripts/split_dataset.py` |
-| No checkpoint / Streamlit error | Run `python scripts/train.py` |
+| No checkpoint / Streamlit error | `python scripts/train.py` |
 | Very slow training | Normal on CPU; lower `epochs` or use GPU |
 | Out of memory | Lower `batch_size` in config |
 
@@ -203,5 +224,3 @@ outputs/          created when you train (local)
 | defect | ~52.7% |
 | normal | ~47.3% |
 | Split | 80% / 10% / 10% |
-
-Repository: [github.com/mentisVeritas/cnn-cast-defect-classification](https://github.com/mentisVeritas/cnn-cast-defect-classification)
