@@ -1,8 +1,8 @@
               precision    recall  f1-score   support
 
-      defect       0.89      0.98      0.93       385
-      normal       0.97      0.87      0.92       346
+      defect       0.92      0.97      0.94       385
+      normal       0.96      0.91      0.93       346
 
-    accuracy                           0.93       731
-   macro avg       0.93      0.92      0.93       731
-weighted avg       0.93      0.93      0.93       731
+    accuracy                           0.94       731
+   macro avg       0.94      0.94      0.94       731
+weighted avg       0.94      0.94      0.94       731

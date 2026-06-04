@@ -24,6 +24,7 @@
     "batch_size": 16,
     "dropout": 0.4,
     "epochs_configured": 12,
-    "epochs_trained": null
+    "epochs_trained": 22,
+    "note": "Metrics from main CNN (scripts/train.py); same hyperparameters as experiment A."
   }
 }

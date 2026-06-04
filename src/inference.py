@@ -85,3 +85,26 @@ def predict_image(
         "probabilities": {class_names[i]: float(probs[i]) for i in range(len(class_names))},
         "image_path": str(image_path),
     }
+
+
+def predict_pil_image(
+    image: Image.Image,
+    model: CastDefectCNN,
+    class_names: list[str],
+    config: dict[str, Any],
+    device: torch.device,
+) -> dict[str, Any]:
+    """Run inference on an in-memory PIL image (e.g. Streamlit upload)."""
+    transform = _build_inference_transform(config["training"]["image_size"])
+    tensor = transform(image.convert("RGB")).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        outputs = model(tensor)
+        probs = torch.softmax(outputs, dim=1).cpu().numpy()[0]
+
+    pred_idx = int(probs.argmax())
+    return {
+        "predicted_class": class_names[pred_idx],
+        "confidence": float(probs[pred_idx]),
+        "probabilities": {class_names[i]: float(probs[i]) for i in range(len(class_names))},
+    }

@@ -227,8 +227,13 @@ class Trainer:
         self.training_time_seconds = time.perf_counter() - t0
 
         out = resolve_path(self.config["evaluation"]["metrics_file"]).parent / "training_history.json"
+        payload = {
+            **self.history,
+            "training_time_seconds": round(self.training_time_seconds, 2),
+            "epochs_trained": len(self.history.get("train_loss", [])),
+        }
         with out.open("w", encoding="utf-8") as f:
-            json.dump(self.history, f, indent=2)
+            json.dump(payload, f, indent=2)
 
         print(f"\nDone. Best model: {best}")
         return self.history
