@@ -25,17 +25,20 @@ git clone git@github.com:mentisVeritas/cnn-cast-defect-classification.git
 cd cnn-cast-defect-classification
 
 git lfs install
-git lfs pull
+scripts\lfs_pull_windows.bat
+scripts\verify_lfs_files.bat
 scripts\unpack_dataset.bat
 ```
+
+`git lfs pull` alone often prints nothing; **`lfs_pull_windows.bat`** runs `fetch` + `checkout` and checks sizes.
 
 After unpack you should have:
 
 - `data\label.csv`
 - `data\raw_images\` (thousands of `.jpeg` files)
-- `data\data.zip` (LFS archive, keep in repo)
+- `data\data.zip` (~65–85 MB, not ~130 bytes)
 
-If `git lfs pull` fails, install Git LFS and run it again from the project folder.
+If download fails, see **Git LFS on Windows** in `data\README.md` or re-clone from GitHub (do not copy folder by hand).
 
 ---
 
@@ -154,8 +157,10 @@ outputs\        — checkpoints, plots, logs (created when training)
 | Problem | Fix |
 |---------|-----|
 | `'py' is not recognized` | Reinstall Python 3.11 with “Add to PATH”, or use `python` instead of `py` |
-| `git lfs pull` — file is a pointer | Run `git lfs install`, then `git lfs pull` again |
-| `Missing data\data.zip` | `git lfs pull`, then `scripts\unpack_dataset.bat` |
+| `git lfs pull` does nothing / small `data.zip` (~130 B) | Run `scripts\lfs_pull_windows.bat` then `scripts\verify_lfs_files.bat` — zip must be **~65–85 MB** |
+| Project opened without full clone (PyCharm copy) | Clone again: `git clone https://github.com/mentisVeritas/cnn-cast-defect-classification.git` |
+| `git lfs pull` — file is a pointer | `git lfs install` → `scripts\lfs_pull_windows.bat` |
+| `Missing data\data.zip` | `scripts\lfs_pull_windows.bat`, then `scripts\unpack_dataset.bat` |
 | `train not found` / `processed` missing | Run `python scripts\split_dataset.py` first |
 | Streamlit warnings / no browser | Use `streamlit run app\streamlit_app.py`, not `python app\streamlit_app.py` |
 | PyCharm wrong interpreter | Point to `.venv\Scripts\python.exe`, not another project’s venv |
