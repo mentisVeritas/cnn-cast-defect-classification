@@ -19,3 +19,8 @@
 2026-05-25 17:21:38 | INFO | Epoch 17/20 train_loss=0.2573 val_loss=0.2418 | train_acc=91.11% val_acc=92.43%
 2026-05-25 17:22:03 | INFO | Epoch 18/20 train_loss=0.2429 val_loss=0.2803 | train_acc=91.54% val_acc=89.13%
 2026-05-25 17:22:29 | INFO | Epoch 19/20 train_loss=0.2352 val_loss=0.2701 | train_acc=92.11% val_acc=89.96%
+2026-05-29 14:56:13 | INFO | Resumed from epoch 20, next epoch: 21
+2026-05-29 14:56:44 | INFO | Resumed from epoch 20, next epoch: 21
+2026-06-01 01:16:39 | INFO | Resumed from epoch 20, next epoch: 21
+2026-06-01 01:17:03 | INFO | Epoch 21/25 train_loss=0.2297 val_loss=0.3661 | train_acc=92.14% val_acc=84.32%
+2026-06-01 01:17:21 | INFO | Resumed from epoch 21, next epoch: 22
