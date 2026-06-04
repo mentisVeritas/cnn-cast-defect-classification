@@ -121,6 +121,13 @@ streamlit run app\streamlit_app.py
 
 Open the URL from the terminal (usually `http://localhost:8501`).
 
+Tabs in the app:
+
+- **Prediction** — class + probability bar chart
+- **Feature maps** — CNN activation heatmaps (conv1–conv3)
+- **Grad-CAM** — where the model looked (overlay on image)
+- **Model metrics** — test accuracy/F1, confusion matrix, training curves
+
 **PyCharm:** Run configuration **Streamlit app**, or Run on `app\streamlit_app.py` (starts Streamlit automatically).  
 Do **not** use plain “python streamlit_app.py” without Streamlit — the UI will not open.
 
@@ -178,9 +185,19 @@ outputs\        — checkpoints, plots, logs (created when training)
 
 ---
 
+## BTEC assignment artifacts
+
+```bash
+python scripts/run_btec_assets.py
+python scripts/run_btec_assets.py --with-training --epochs 12   # tuning + ResNet18
+```
+
+Outputs: `outputs/tuning/`, `outputs/baseline/`, `outputs/feature_maps/`, `docs/dataset_documentation.md`, `docs/screenshots/`.
+
+---
+
 ## TODO
 
 - [ ] More automated tests
-- [ ] ResNet18 baseline
 - [ ] Export to ONNX / TorchScript
 - [ ] Stricter `label.csv` validation before split

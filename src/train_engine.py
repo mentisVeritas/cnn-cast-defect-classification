@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Any
 
@@ -85,14 +86,27 @@ def load_checkpoint(path: Path, model, optimizer, device):
 
 
 class Trainer:
-    def __init__(self, config, train_loader, val_loader, class_names, device):
+    def __init__(
+        self,
+        config,
+        train_loader,
+        val_loader,
+        class_names,
+        device,
+        model: nn.Module | None = None,
+        latest_checkpoint: str | Path | None = None,
+        best_checkpoint: str | Path | None = None,
+        resume_training: bool | None = None,
+    ):
         self.config = config
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.class_names = class_names
         self.device = device
 
-        self.model = build_model(config, len(class_names)).to(device)
+        self.model = (model if model is not None else build_model(config, len(class_names))).to(
+            device
+        )
         lr = config["training"]["learning_rate"]
         self.optimizer = Adam(self.model.parameters(), lr=lr)
         self.criterion = nn.CrossEntropyLoss()
@@ -106,16 +120,28 @@ class Trainer:
         self.start_epoch = 1
         self.best_val_loss = float("inf")
         self.patience_counter = 0
+        self.training_time_seconds = 0.0
+
+        self._latest_checkpoint = resolve_path(
+            latest_checkpoint or config["checkpoint"]["latest_checkpoint"]
+        )
+        self._best_checkpoint = resolve_path(
+            best_checkpoint or config["checkpoint"]["best_model"]
+        )
+        if resume_training is None:
+            self._resume_training = config["checkpoint"].get("resume_training", True)
+        else:
+            self._resume_training = resume_training
 
         ensure_output_dirs(config)
         self._maybe_resume()
 
     def _maybe_resume(self):
-        path = resolve_path(self.config["checkpoint"]["latest_checkpoint"])
+        path = self._latest_checkpoint
         if self.config["checkpoint"].get("start_from_scratch", False):
             logger.info("Training from scratch.")
             return
-        if not self.config["checkpoint"].get("resume_training", True) or not path.exists():
+        if not self._resume_training or not path.exists():
             logger.info("Training from scratch.")
             return
 
@@ -128,12 +154,13 @@ class Trainer:
 
     def train(self) -> dict:
         epochs = self.config["training"]["epochs"]
-        latest = resolve_path(self.config["checkpoint"]["latest_checkpoint"])
-        best = resolve_path(self.config["checkpoint"]["best_model"])
+        latest = self._latest_checkpoint
+        best = self._best_checkpoint
         es = self.config["training"].get("early_stopping", {})
         es_on = es.get("enabled", False)
         es_patience = es.get("patience", 5)
 
+        t0 = time.perf_counter()
         for epoch in range(self.start_epoch, epochs + 1):
             print(f"\nEpoch {epoch}/{epochs}")
 
@@ -196,6 +223,8 @@ class Trainer:
             if es_on and self.patience_counter >= es_patience:
                 print(f"Early stopping (patience={es_patience})")
                 break
+
+        self.training_time_seconds = time.perf_counter() - t0
 
         out = resolve_path(self.config["evaluation"]["metrics_file"]).parent / "training_history.json"
         with out.open("w", encoding="utf-8") as f:

@@ -15,7 +15,7 @@ data:
 training:
   batch_size: 16
   learning_rate: 0.001
-  epochs: 20
+  epochs: 25
   image_size: 224
   num_workers: auto
   device: auto
@@ -50,3 +50,11 @@ evaluation:
 visualization:
   loss_curve: outputs/plots/loss_curve.png
   accuracy_curve: outputs/plots/accuracy_curve.png
+
+# BTEC experiment outputs (scripts/train_baseline.py, run_hyperparameter_tuning.py)
+experiments:
+  baseline_dir: outputs/baseline
+  tuning_dir: outputs/tuning
+  feature_maps_dir: outputs/feature_maps
+  filters_dir: outputs/filters
+  gradcam_dir: outputs/gradcam
